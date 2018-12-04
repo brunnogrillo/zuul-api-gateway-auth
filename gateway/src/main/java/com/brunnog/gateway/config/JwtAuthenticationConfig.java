@@ -1,0 +1,29 @@
+package com.brunnog.gateway.config;
+
+import org.springframework.beans.factory.annotation.Value;
+
+import lombok.Getter;
+import lombok.ToString;
+
+@Getter
+@ToString
+public class JwtAuthenticationConfig {
+	
+    @Value("${sgs.security.jwt.header:Authorization}")
+    private String header;
+
+    @Value("${sgs.security.jwt.prefix:Bearer }")
+    private String prefix;
+
+    @Value("${sgs.security.jwt.expiration:7200000}")
+    private int expiration; // 2 hours
+
+    @Value("${sgs.security.jwt.secret}")
+    private String secret;
+    
+    @Value("${sgs.security.jwt.authority.key}")
+    private String authorityKey;   
+    
+    @Value("${zuul.prefix}")
+    private String zuulPrefix;
+}
