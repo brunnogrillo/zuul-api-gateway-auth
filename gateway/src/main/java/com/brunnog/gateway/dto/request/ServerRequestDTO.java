@@ -11,5 +11,4 @@ import sgs.architecture.rest.services.dto.request.IRequestDTO;
 public class ServerRequestDTO implements IRequestDTO<Server> {
 
 	private String name;
-	private String uri;
 }

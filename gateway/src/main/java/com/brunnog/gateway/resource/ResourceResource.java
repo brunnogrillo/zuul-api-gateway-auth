@@ -1,5 +1,6 @@
 package com.brunnog.gateway.resource;
 
+import static com.brunnog.gateway.utils.UtilAuth.linkToApplicationName;
 import static org.springframework.hateoas.mvc.ControllerLinkBuilder.linkTo;
 import static org.springframework.hateoas.mvc.ControllerLinkBuilder.methodOn;
 
@@ -16,12 +17,13 @@ import lombok.NoArgsConstructor;
 @NoArgsConstructor
 @EqualsAndHashCode(callSuper = false)
 public class ResourceResource extends ResourceSupport {
-	
+		
 	private Resource resource;
 	
 	public ResourceResource(Resource resource) {
 		this.resource = resource;
 		
+		add(linkToApplicationName(resource));
 		add(linkTo(ResourceController.class).withRel("resources"));
 		add(linkTo(methodOn(ResourceController.class).findById(resource.getId())).withSelfRel());
 	}

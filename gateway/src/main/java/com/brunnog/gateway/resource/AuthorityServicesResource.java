@@ -1,5 +1,6 @@
 package com.brunnog.gateway.resource;
 
+import static com.brunnog.gateway.utils.UtilAuth.linkToApplicationName;
 import static org.springframework.hateoas.mvc.ControllerLinkBuilder.linkTo;
 import static org.springframework.hateoas.mvc.ControllerLinkBuilder.methodOn;
 
@@ -17,14 +18,13 @@ import lombok.NoArgsConstructor;
 @NoArgsConstructor
 @EqualsAndHashCode(callSuper = false)
 public class AuthorityServicesResource extends ResourceSupport {
-
+	
 	private HttpMethod method;
-	private String endpoint;
 		
 	public AuthorityServicesResource(Authority authority) {
-		this.method = authority.getResource().getMethod();
-		this.endpoint = authority.getServer().getUri().concat("/").concat(authority.getResource().getEndpoint());
+		this.method = authority.getResource().getMethod();		
 		
+		add(linkToApplicationName(authority.getResource()));		
 		add(linkTo(methodOn(AuthorityController.class).findById(authority.getId())).withSelfRel());
 	}
 }

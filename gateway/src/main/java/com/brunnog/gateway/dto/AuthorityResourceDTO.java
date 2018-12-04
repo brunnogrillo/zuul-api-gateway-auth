@@ -1,7 +1,6 @@
 package com.brunnog.gateway.dto;
 
 import com.brunnog.gateway.model.Resource;
-import com.brunnog.gateway.model.Server;
 import com.brunnog.gateway.model.User;
 
 import lombok.Value;
@@ -11,5 +10,4 @@ public class AuthorityResourceDTO {
 	
 	private Resource resource;
 	private User user;
-	private Server server;
 }

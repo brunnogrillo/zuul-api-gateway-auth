@@ -23,12 +23,12 @@ public class UtilAuthority {
 			.map(grantedAuthority -> {
 				Authority a = (Authority) grantedAuthority;		
 				Resource resource = a.getResource();
-				return new AuthorityDTO(a.getServer().getName(), resource.getEndpoint(), resource.getMethod());
+				return new AuthorityDTO(resource.getEndpoint(), resource.getMethod());
 			})
 			.collect(toList());
 	}
 	
 	public static Set<String> groupAuthoritiesByService(User principal) {
-		return principal.getAuthority().stream().map(a -> a.getResource().getService()).collect(toSet());
+		return principal.getAuthority().stream().map(a -> a.getResource().getServer().getName()).collect(toSet());
 	}
 }

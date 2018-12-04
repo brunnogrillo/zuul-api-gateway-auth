@@ -9,6 +9,7 @@ import javax.persistence.FetchType;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
+import javax.persistence.ManyToOne;
 import javax.persistence.OneToMany;
 import javax.persistence.Table;
 import javax.persistence.UniqueConstraint;
@@ -23,30 +24,31 @@ import sgs.architecture.rest.services.entity.IEntity;
 
 @Entity
 @Table(uniqueConstraints = 
-	@UniqueConstraint(columnNames = {"service", "path", "method"})
+	@UniqueConstraint(columnNames = {"server_id", "path", "method"})
 )
 @Data
 public class Resource implements IEntity<ResourceResource> {
 	
 	private static final long serialVersionUID = 1L;
-
+		
 	@Id
 	@GeneratedValue(strategy = GenerationType.IDENTITY)
 	private Long id;
-	
-	private String service;
-	
+		
 	private String path;
 	
 	@Enumerated(EnumType.STRING)
 	private HttpMethod method;
+	
+	@ManyToOne
+	private Server server;
 	
 	@JsonIgnore
 	@OneToMany(mappedBy = "resource", fetch = FetchType.EAGER)
 	private List<Authority> authority;
 		
 	public String getEndpoint() {
-		return service.concat(path);
+		return path;
 	}
 
 	@Override

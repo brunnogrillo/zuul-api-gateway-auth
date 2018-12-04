@@ -22,30 +22,19 @@ public class AuthorityDTO implements GrantedAuthority {
 			AuthorityDTO auth = getAuthorityFromString(authority);
 			this.resource = auth.getResource();
 			this.method = auth.getMethod();
-			this.server = auth.getServer();
 		} catch (IOException e) {
 			throw new AuthorizationFilterException("Could not parse authority from string to dto", e);
 		}
 	}
 	
-	public AuthorityDTO(String server, String resource, HttpMethod method) {
+	public AuthorityDTO(String resource, HttpMethod method) {
 		this.resource = resource;
 		this.method = method;
-		this.server = server;
 	}
 
-	private String server;
 	private String resource;
 	private HttpMethod method;
 	
-	public String getServer() {
-		return server;
-	}
-
-	public void setServer(String server) {
-		this.server = server;
-	}
-
 	public String getResource() {
 		return resource;
 	}

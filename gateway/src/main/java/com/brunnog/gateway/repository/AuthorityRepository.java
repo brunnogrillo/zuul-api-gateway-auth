@@ -13,5 +13,5 @@ public interface AuthorityRepository extends JpaRepository<Authority, Long> {
 
 	Optional<List<Authority>> findByUserId(Long id);
 	
-	Optional<List<Authority>> findByResourceServiceAndUserUsername(String serviceName, String username);
+	Optional<List<Authority>> findByResourceServerNameAndUserUsername(String serverName, String username);
 }

@@ -9,7 +9,6 @@ import org.springframework.stereotype.Service;
 import com.brunnog.gateway.dto.request.AuthorityRequestDTO;
 import com.brunnog.gateway.model.Authority;
 import com.brunnog.gateway.model.Resource;
-import com.brunnog.gateway.model.Server;
 import com.brunnog.gateway.model.User;
 import com.brunnog.gateway.repository.AuthorityRepository;
 
@@ -20,10 +19,7 @@ public class AuthorityService implements CrudService<Authority, AuthorityRequest
 	
 	@Autowired
 	private UserService userService;
-	
-	@Autowired
-	private ServerService serverService;
-	
+		
 	@Autowired
 	private ResourceService resourceService;
 
@@ -39,10 +35,9 @@ public class AuthorityService implements CrudService<Authority, AuthorityRequest
 	public Authority save(AuthorityRequestDTO authority) throws NotFoundException {
 		
 		User user = userService.findById(authority.getUserId());
-		Server server = serverService.findById(authority.getServerId());
 		Resource resource = resourceService.findById(authority.getResourceId());
 		
-		Authority authToSave = new Authority(user, server, resource);
+		Authority authToSave = new Authority(user, resource);
 		
 		return getRepository().save(authToSave);
 	}
@@ -51,11 +46,9 @@ public class AuthorityService implements CrudService<Authority, AuthorityRequest
 	public Authority update(Long id, AuthorityRequestDTO authority) throws NotFoundException {		
 		Authority authorityToUpdate = findById(id);
 		User user = userService.findById(authority.getUserId());
-		Server server = serverService.findById(authority.getServerId());
 		Resource resource = resourceService.findById(authority.getResourceId());
 		
 		authorityToUpdate.setUser(user);
-		authorityToUpdate.setServer(server);
 		authorityToUpdate.setResource(resource);
 		
 		return getRepository().save(authorityToUpdate);
@@ -65,7 +58,7 @@ public class AuthorityService implements CrudService<Authority, AuthorityRequest
 		return getRepository().findByUserId(id).orElseThrow(NotFoundException::new);
 	}
 
-	public List<Authority> findByServiceAndUsername(String serviceName, String username) throws NotFoundException {
-		return getRepository().findByResourceServiceAndUserUsername(serviceName, username).orElseThrow(NotFoundException::new);
+	public List<Authority> findByServiceAndUsername(String serverName, String username) throws NotFoundException {
+		return getRepository().findByResourceServerNameAndUserUsername(serverName, username).orElseThrow(NotFoundException::new);
 	}
 }

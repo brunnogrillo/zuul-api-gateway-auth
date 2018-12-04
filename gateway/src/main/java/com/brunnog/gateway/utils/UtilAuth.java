@@ -4,18 +4,24 @@ import static java.lang.Boolean.FALSE;
 import static java.lang.Boolean.TRUE;
 import static java.util.stream.Collectors.toList;
 import static org.apache.logging.log4j.util.Strings.EMPTY;
+import static org.springframework.hateoas.mvc.ControllerLinkBuilder.linkTo;
 
 import java.io.IOException;
+import java.io.InputStream;
 import java.util.Collection;
 import java.util.List;
+import java.util.Properties;
 
 import javax.servlet.http.HttpServletRequest;
 
+import org.springframework.hateoas.Link;
 import org.springframework.http.HttpMethod;
 import org.springframework.security.core.GrantedAuthority;
 
 import com.brunnog.gateway.config.JwtAuthenticationConfig;
+import com.brunnog.gateway.controller.GatewayController;
 import com.brunnog.gateway.dto.AuthorityDTO;
+import com.brunnog.gateway.model.Resource;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 
@@ -39,23 +45,20 @@ public class UtilAuth {
 	}
 
 	public static Boolean contains(Collection<GrantedAuthority> grantedAuthorities, final String uri, final String method, JwtAuthenticationConfig config) {		
-		
-		if (!uri.startsWith(config.getZuulPrefix()))
-			return FALSE;
-		
+				
 		List<AuthorityDTO> authorities = grantedAuthorities
 				.stream()
 				.map(a -> ((AuthorityDTO) a))
 				.collect(toList());
 		
-		String servername = uri.split(SLASH)[2];
+		String servername = uri.split(SLASH)[1];
 		String newUri = uri.replace(SLASH + servername, EMPTY);
 		newUri = newUri.replace(config.getZuulPrefix(), SLASH) + SLASH;
 		
 		for (AuthorityDTO auth : authorities) {
 			String resource = auth.getResource();
 			if (isResourceValid(resource, newUri) && auth.getMethod().matches(method)
-					&& auth.getServer().equals(servername))
+					/*&& auth.getServer().equals(servername)*/)
 				return TRUE;
 		}
 		return FALSE;
@@ -104,8 +107,8 @@ public class UtilAuth {
 		return new ObjectMapper().readValue(authority, AuthorityDTO.class);
 	}
 	
-	public static String generateAuthority(String server, String resource, HttpMethod method) {		
-		return generateAuthority(new AuthorityDTO(server, resource, method));
+	public static String generateAuthority(String resource, HttpMethod method) {		
+		return generateAuthority(new AuthorityDTO(resource, method));
 	}
 	
 	public static String generateAuthority(AuthorityDTO authorityDTO) {
@@ -114,5 +117,28 @@ public class UtilAuth {
 		} catch (JsonProcessingException e) {
 			return null;
 		}
+	}
+	
+	public static Link linkToApplicationName(Resource resource) {
+		String path = resource.getPath();
+		String serverName = resource.getServer().getName();
+		
+		String applicationName = getApplicationPropertiies().getProperty("spring.application.name");
+		
+		if (applicationName.equals(resource.getServer().getName()))
+			return linkTo(GatewayController.class).slash(path).withRel("endpoint");
+		else
+			return linkTo(GatewayController.class).slash(serverName).slash(path).withRel("endpoint");
+	}
+	
+	private static Properties getApplicationPropertiies() {
+		Properties configuration = new Properties();
+		try (InputStream inputStream = UtilAuth.class.getClassLoader().getResourceAsStream("application.properties")) {
+			configuration.load(inputStream);
+		} catch (IOException e) {
+			throw new RuntimeException(e);
+		}
+		
+		return configuration;
 	}
 }

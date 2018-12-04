@@ -10,4 +10,8 @@ public class AuthorizationFilterException extends AuthenticationException {
 		super(msg, t);
 	}
 
+	public AuthorizationFilterException(String msg) {
+		super(msg);
+	}
+
 }

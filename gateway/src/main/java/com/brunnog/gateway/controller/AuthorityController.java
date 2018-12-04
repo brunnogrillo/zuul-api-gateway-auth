@@ -34,7 +34,7 @@ import sgs.architecture.rest.services.controller.CrudController;
 @Api(tags="Authority")
 @RequestMapping("/authorities")
 public class AuthorityController implements CrudController<AuthorityRequestDTO> {
-
+	
 	@Autowired
 	private HttpServletRequest httpServletRequest;
 	
@@ -55,7 +55,7 @@ public class AuthorityController implements CrudController<AuthorityRequestDTO> 
 			@RequestParam("name") String serviceName,
 			@RequestParam("username") String username) {
 		try {			
-			String user = getClaims(httpServletRequest, jwtConfig).getSubject();			
+			String user = getClaims(httpServletRequest, jwtConfig).getSubject();
 			if (!user.equals(username))
 				return ResponseEntity.status(HttpStatus.UNAUTHORIZED).build();
 			

@@ -12,7 +12,7 @@ import sgs.architecture.rest.services.dto.request.IRequestDTO;
 @EqualsAndHashCode(callSuper = false)
 public class ResourceRequestDTO implements IRequestDTO<Resource> {
 	
-	private String service;
+	private Long serverId;
 	private String path;
 	private HttpMethod method;	
 }

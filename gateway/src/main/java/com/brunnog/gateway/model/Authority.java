@@ -24,9 +24,8 @@ public class Authority implements GrantedAuthority, IEntity<AuthorityResource> {
 	
 	public Authority() {}
 
-	public Authority(User user, Server server, Resource resource) {
+	public Authority(User user, Resource resource) {
 		this.user = user;
-		this.server = server;
 		this.resource = resource;
 	}
 
@@ -40,12 +39,9 @@ public class Authority implements GrantedAuthority, IEntity<AuthorityResource> {
 	@ManyToOne
 	private User user;
 	
-	@ManyToOne
-	private Server server;
-
 	@Override
 	public String getAuthority() {
-		return generateAuthority(server.getName(), resource.getEndpoint(), resource.getMethod());
+		return generateAuthority(resource.getEndpoint(), resource.getMethod());
 	}
 	
 	@Override

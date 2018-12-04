@@ -31,11 +31,10 @@ public class Server implements IEntity<ServerResource> {
 	private Long id;
 	
 	private String name;
-	private String uri;
 	
 	@JsonIgnore
 	@OneToMany(mappedBy = "server", fetch = FetchType.EAGER)
-	private List<Authority> authority;
+	private List<Resource> resource;
 
 	@Override
 	public ServerResource toResource() {

@@ -1,20 +1,19 @@
 package com.brunnog.products.controller;
 
-import java.util.List;
+import java.util.Arrays;
+import java.util.Collection;
 
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
-
-import com.google.common.collect.ImmutableList;
 
 @RestController
 @RequestMapping("/test")
 public class ProductsController {
 
 	@GetMapping
-	public List findAll() {
-		return ImmutableList.of(
+	public Collection<?> findAll() {
+		return Arrays.asList(
 	            1L, "Product 1",
 	            2L, "Product 2",
 	            3L, "Product 3",

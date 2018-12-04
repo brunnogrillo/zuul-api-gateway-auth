@@ -2,7 +2,6 @@ package com.brunnog.gateway.auth;
 
 import static com.brunnog.gateway.utils.UtilAuth.contains;
 import static com.brunnog.gateway.utils.UtilAuth.getClaims;
-import static java.util.Objects.isNull;
 import static java.util.Objects.nonNull;
 import static org.apache.logging.log4j.util.Strings.EMPTY;
 
@@ -43,7 +42,7 @@ public class JWTAuthorizationFilter extends BasicAuthenticationFilter {
 		
 		UsernamePasswordAuthenticationToken authentication = getAuthentication(req);
 		
-		if (isNull(authentication) || !contains(authentication.getAuthorities(), req.getRequestURI(), req.getMethod(), config)) {
+		if (!contains(authentication.getAuthorities(), req.getRequestURI(), req.getMethod(), config)) {
 			SecurityContextHolder.getContext().setAuthentication(null);
 			chain.doFilter(req, res);
 			return;
@@ -71,6 +70,6 @@ public class JWTAuthorizationFilter extends BasicAuthenticationFilter {
 				return new UsernamePasswordAuthenticationToken(user, EMPTY, authorities);			
 		}
 		
-		return null;
+		throw new AuthorizationFilterException("Invalid token");
 	}
 }
