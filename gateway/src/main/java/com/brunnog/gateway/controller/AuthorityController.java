@@ -28,12 +28,12 @@ import com.brunnog.gateway.services.AuthorityService;
 
 import io.swagger.annotations.Api;
 import sgs.architecture.rest.services.annotation.AuthorizationHeader;
-import sgs.architecture.rest.services.controller.CrudController;
+import sgs.architecture.rest.services.controller.CrudAuthorizationController;
 
 @RestController
 @Api(tags="Authority")
 @RequestMapping("/authorities")
-public class AuthorityController implements CrudController<AuthorityRequestDTO> {
+public class AuthorityController implements CrudAuthorizationController<AuthorityRequestDTO> {
 	
 	@Autowired
 	private HttpServletRequest httpServletRequest;

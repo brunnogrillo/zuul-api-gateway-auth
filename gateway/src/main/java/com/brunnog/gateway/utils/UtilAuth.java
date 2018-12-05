@@ -21,6 +21,7 @@ import org.springframework.security.core.GrantedAuthority;
 import com.brunnog.gateway.config.JwtAuthenticationConfig;
 import com.brunnog.gateway.controller.GatewayController;
 import com.brunnog.gateway.dto.AuthorityDTO;
+import com.brunnog.gateway.exception.AuthenticationFilterException;
 import com.brunnog.gateway.model.Resource;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
@@ -51,10 +52,9 @@ public class UtilAuth {
 				.map(a -> ((AuthorityDTO) a))
 				.collect(toList());		
 		
-		String newUri = uri.replace(config.getApiPrefix(), EMPTY) + SLASH;
+		String newUri = uri.replace(config.getApiPrefix(), EMPTY).concat(SLASH);
 		for (AuthorityDTO auth : authorities) {
-			String resource = auth.getResource();
-			if (isResourceValid(resource, newUri) && auth.getMethod().matches(method))
+			if (auth.getMethod().matches(method) && isResourceValid(auth.getResource(), newUri))
 				return TRUE;
 		}
 		return FALSE;
@@ -134,7 +134,7 @@ public class UtilAuth {
 		try (InputStream inputStream = UtilAuth.class.getClassLoader().getResourceAsStream("application.properties")) {
 			configuration.load(inputStream);
 		} catch (IOException e) {
-			throw new RuntimeException(e);
+			throw new AuthenticationFilterException("Could not load application.properties", e);
 		}
 		
 		return configuration;

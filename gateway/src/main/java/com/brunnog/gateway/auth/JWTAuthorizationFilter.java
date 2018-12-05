@@ -30,11 +30,11 @@ import io.jsonwebtoken.Claims;
 
 public class JWTAuthorizationFilter extends BasicAuthenticationFilter {
 	
-	private final JwtAuthenticationConfig config;
+	private final JwtAuthenticationConfig jwtConfig;
 	
-	public JWTAuthorizationFilter(AuthenticationManager authenticationManager, JwtAuthenticationConfig config) {
+	public JWTAuthorizationFilter(AuthenticationManager authenticationManager, JwtAuthenticationConfig jwtConfig) {
 		super(authenticationManager);
-		this.config = config;
+		this.jwtConfig = jwtConfig;
 	}
 
 	@Override
@@ -43,7 +43,7 @@ public class JWTAuthorizationFilter extends BasicAuthenticationFilter {
 		
 		UsernamePasswordAuthenticationToken authentication = getAuthentication(req);
 		
-		if (isNull(authentication) || !contains(authentication.getAuthorities(), req.getRequestURI(), req.getMethod(), config)) {
+		if (isNull(authentication) || !contains(authentication.getAuthorities(), req.getRequestURI(), req.getMethod(), jwtConfig)) {
 			SecurityContextHolder.getContext().setAuthentication(null);
 			chain.doFilter(req, res);
 			return;
@@ -54,14 +54,14 @@ public class JWTAuthorizationFilter extends BasicAuthenticationFilter {
 	}
 	
 	private UsernamePasswordAuthenticationToken getAuthentication(HttpServletRequest req) {
-		String token = req.getHeader(config.getHeader());
+		String token = req.getHeader(jwtConfig.getHeader());
 		
-		if (nonNull(token) && token.startsWith(config.getPrefix())) {
-			Claims claims = getClaims(req, config);
+		if (nonNull(token) && token.startsWith(jwtConfig.getPrefix())) {
+			Claims claims = getClaims(req, jwtConfig);
 					
 			List<AuthorityDTO> authorities = Collections.emptyList();
 			try {
-				authorities = new ObjectMapper().readValue(claims.get(config.getAuthorityKey()).toString(), new TypeReference<List<AuthorityDTO>>() {});
+				authorities = new ObjectMapper().readValue(claims.get(jwtConfig.getAuthorityKey()).toString(), new TypeReference<List<AuthorityDTO>>() {});
 			} catch (IOException e) {
 				throw new AuthorizationFilterException("Invalid authority", e);
 			}

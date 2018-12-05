@@ -2,10 +2,10 @@ package com.brunnog.gateway.config;
 
 import org.springframework.beans.factory.annotation.Value;
 
-import lombok.Getter;
+import lombok.Data;
 import lombok.ToString;
 
-@Getter
+@Data
 @ToString
 public class JwtAuthenticationConfig {
 	

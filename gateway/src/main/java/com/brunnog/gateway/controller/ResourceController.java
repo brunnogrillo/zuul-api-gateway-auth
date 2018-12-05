@@ -8,12 +8,12 @@ import com.brunnog.gateway.dto.request.ResourceRequestDTO;
 import com.brunnog.gateway.services.ResourceService;
 
 import io.swagger.annotations.Api;
-import sgs.architecture.rest.services.controller.CrudController;
+import sgs.architecture.rest.services.controller.CrudAuthorizationController;
 
 @RestController
 @Api(tags="Resource")
 @RequestMapping("/resources")
-public class ResourceController implements CrudController<ResourceRequestDTO> {
+public class ResourceController implements CrudAuthorizationController<ResourceRequestDTO> {
 	
 	@Autowired
 	private ResourceService resourceService;

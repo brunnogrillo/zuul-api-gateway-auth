@@ -8,12 +8,12 @@ import com.brunnog.gateway.dto.request.ServerRequestDTO;
 import com.brunnog.gateway.services.ServerService;
 
 import io.swagger.annotations.Api;
-import sgs.architecture.rest.services.controller.CrudController;
+import sgs.architecture.rest.services.controller.CrudAuthorizationController;
 
 @RestController
 @Api(tags="Server")
 @RequestMapping("/servers")
-public class ServerController implements CrudController<ServerRequestDTO> {
+public class ServerController implements CrudAuthorizationController<ServerRequestDTO> {
 
 	@Autowired
 	private ServerService serverService;

@@ -9,5 +9,4 @@ public class AuthenticationFilterException extends AuthenticationException {
 	public AuthenticationFilterException(String msg, Throwable t) {
 		super(msg, t);
 	}
-
 }

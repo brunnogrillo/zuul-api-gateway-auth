@@ -37,16 +37,15 @@ import lombok.extern.slf4j.Slf4j;
 public class JWTAuthenticationFilter extends UsernamePasswordAuthenticationFilter {
 	
 	private final AuthenticationManager authenticationManager;
-	private final JwtAuthenticationConfig config;
+	private final JwtAuthenticationConfig jwtConfig;
 
-	public JWTAuthenticationFilter(AuthenticationManager authenticationManager, JwtAuthenticationConfig config) {
+	public JWTAuthenticationFilter(AuthenticationManager authenticationManager, JwtAuthenticationConfig jwtConfig) {
 		this.authenticationManager = authenticationManager;
-		this.config = config;
+		this.jwtConfig = jwtConfig;
 	}
 	
 	@Override
 	public Authentication attemptAuthentication(HttpServletRequest req, HttpServletResponse res) {
-
 		try {
 			User user = new ObjectMapper().readValue(req.getInputStream(), User.class);
 			UsernamePasswordAuthenticationToken authentication = new UsernamePasswordAuthenticationToken(
@@ -69,7 +68,7 @@ public class JWTAuthenticationFilter extends UsernamePasswordAuthenticationFilte
 		Set<String> services = groupAuthoritiesByService(principal);
 		List<LoginResource> access = services.stream().map(s -> resource(s, principal.getUsername())).collect(toList());		
 		
-		res.addHeader(config.getHeader(), config.getPrefix() + token);
+		res.addHeader(jwtConfig.getHeader(), jwtConfig.getPrefix() + token);
 		res.addHeader(CONTENT_TYPE, "application/hal+json;charset=UTF-8");
 		try {
 			res.getWriter().write(resourceToHalJson(access));
@@ -94,9 +93,9 @@ public class JWTAuthenticationFilter extends UsernamePasswordAuthenticationFilte
 		
 		return Jwts.builder()
 				   .setSubject(principal.getUsername())
-			       .claim(config.getAuthorityKey(), authorities)
-				   .setExpiration(new Date(System.currentTimeMillis() + config.getExpiration()))
-				   .signWith(HS512, config.getSecret())
+			       .claim(jwtConfig.getAuthorityKey(), authorities)
+				   .setExpiration(new Date(System.currentTimeMillis() + jwtConfig.getExpiration()))
+				   .signWith(HS512, jwtConfig.getSecret())
 				   .compact();
 	}
 }

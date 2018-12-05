@@ -1,12 +1,13 @@
 package com.brunnog.gateway.utils;
 
+import static com.brunnog.gateway.utils.UtilAuth.getApplicationName;
 import static java.util.stream.Collectors.toList;
 import static java.util.stream.Collectors.toSet;
 
 import java.util.List;
 import java.util.Set;
 
-import org.apache.logging.log4j.util.Strings;
+import static org.apache.logging.log4j.util.Strings.*;
 
 import com.brunnog.gateway.dto.AuthorityDTO;
 import com.brunnog.gateway.model.Authority;
@@ -22,14 +23,11 @@ public class UtilAuthority {
 	public static List<AuthorityDTO> authorityToDTO(User principal) {
 		return principal.getAuthorities()
 			.stream()
-			.map(grantedAuthority -> {
-				Authority a = (Authority) grantedAuthority;		
-				Resource resource = a.getResource();
+			.map(grantedAuthority -> {	
+				Resource resource = ((Authority) grantedAuthority).getResource();
 				
-				String applicationName = UtilAuth.getApplicationName();
-				String servername = resource.getServer().getName();
-				
-				String prefix = applicationName.equals(servername) ? Strings.EMPTY : servername;
+				String servername = resource.getServer().getName();				
+				String prefix = getApplicationName().equals(servername) ? EMPTY : servername;
 				return new AuthorityDTO(prefix + "/" + resource.getPath(), resource.getMethod());
 			})
 			.collect(toList());
