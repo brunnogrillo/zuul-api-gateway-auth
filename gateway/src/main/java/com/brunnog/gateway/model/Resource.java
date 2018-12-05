@@ -46,11 +46,7 @@ public class Resource implements IEntity<ResourceResource> {
 	@JsonIgnore
 	@OneToMany(mappedBy = "resource", fetch = FetchType.EAGER)
 	private List<Authority> authority;
-		
-	public String getEndpoint() {
-		return path;
-	}
-
+	
 	@Override
 	public ResourceResource toResource() {
 		return new ResourceResource(this);

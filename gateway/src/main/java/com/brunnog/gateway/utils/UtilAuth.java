@@ -49,16 +49,12 @@ public class UtilAuth {
 		List<AuthorityDTO> authorities = grantedAuthorities
 				.stream()
 				.map(a -> ((AuthorityDTO) a))
-				.collect(toList());
+				.collect(toList());		
 		
-		String servername = uri.split(SLASH)[1];
-		String newUri = uri.replace(SLASH + servername, EMPTY);
-		newUri = newUri.replace(config.getZuulPrefix(), SLASH) + SLASH;
-		
+		String newUri = uri.replace(config.getApiPrefix(), EMPTY) + SLASH;
 		for (AuthorityDTO auth : authorities) {
 			String resource = auth.getResource();
-			if (isResourceValid(resource, newUri) && auth.getMethod().matches(method)
-					/*&& auth.getServer().equals(servername)*/)
+			if (isResourceValid(resource, newUri) && auth.getMethod().matches(method))
 				return TRUE;
 		}
 		return FALSE;
@@ -123,12 +119,14 @@ public class UtilAuth {
 		String path = resource.getPath();
 		String serverName = resource.getServer().getName();
 		
-		String applicationName = getApplicationPropertiies().getProperty("spring.application.name");
-		
-		if (applicationName.equals(resource.getServer().getName()))
+		if (getApplicationName().equals(resource.getServer().getName()))
 			return linkTo(GatewayController.class).slash(path).withRel("endpoint");
 		else
 			return linkTo(GatewayController.class).slash(serverName).slash(path).withRel("endpoint");
+	}
+	
+	public static String getApplicationName() {
+		return getApplicationPropertiies().getProperty("spring.application.name");
 	}
 	
 	private static Properties getApplicationPropertiies() {

@@ -24,6 +24,6 @@ public class JwtAuthenticationConfig {
     @Value("${sgs.security.jwt.authority.key}")
     private String authorityKey;   
     
-    @Value("${zuul.prefix}")
-    private String zuulPrefix;
+    @Value("${server.servlet.context-path}")
+    private String apiPrefix;
 }

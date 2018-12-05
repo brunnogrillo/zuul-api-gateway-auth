@@ -41,7 +41,7 @@ public class Authority implements GrantedAuthority, IEntity<AuthorityResource> {
 	
 	@Override
 	public String getAuthority() {
-		return generateAuthority(resource.getEndpoint(), resource.getMethod());
+		return generateAuthority(resource.getPath(), resource.getMethod());
 	}
 	
 	@Override

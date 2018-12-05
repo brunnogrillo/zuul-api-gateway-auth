@@ -63,13 +63,11 @@ public class JWTAuthenticationFilter extends UsernamePasswordAuthenticationFilte
 	protected void successfulAuthentication(HttpServletRequest req, HttpServletResponse res, FilterChain chain,
 			Authentication auth) {
 		
-		User principal = (User) auth.getPrincipal();		
-		String authorities = getAuthorities(principal);		
-		String username = principal.getUsername();
-		String token = getToken(authorities, username);			
+		User principal = (User) auth.getPrincipal();
+		String token = getToken(principal);			
 		
 		Set<String> services = groupAuthoritiesByService(principal);
-		List<LoginResource> access = services.stream().map(s -> resource(s, username)).collect(toList());		
+		List<LoginResource> access = services.stream().map(s -> resource(s, principal.getUsername())).collect(toList());		
 		
 		res.addHeader(config.getHeader(), config.getPrefix() + token);
 		res.addHeader(CONTENT_TYPE, "application/hal+json;charset=UTF-8");
@@ -91,9 +89,11 @@ public class JWTAuthenticationFilter extends UsernamePasswordAuthenticationFilte
 		}
 	}
 
-	private String getToken(String authorities, String username) {
+	private String getToken(User principal) {
+		String authorities = getAuthorities(principal);	
+		
 		return Jwts.builder()
-				   .setSubject(username)
+				   .setSubject(principal.getUsername())
 			       .claim(config.getAuthorityKey(), authorities)
 				   .setExpiration(new Date(System.currentTimeMillis() + config.getExpiration()))
 				   .signWith(HS512, config.getSecret())

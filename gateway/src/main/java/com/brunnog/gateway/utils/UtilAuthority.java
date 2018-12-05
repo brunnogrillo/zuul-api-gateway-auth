@@ -6,6 +6,8 @@ import static java.util.stream.Collectors.toSet;
 import java.util.List;
 import java.util.Set;
 
+import org.apache.logging.log4j.util.Strings;
+
 import com.brunnog.gateway.dto.AuthorityDTO;
 import com.brunnog.gateway.model.Authority;
 import com.brunnog.gateway.model.Resource;
@@ -23,7 +25,12 @@ public class UtilAuthority {
 			.map(grantedAuthority -> {
 				Authority a = (Authority) grantedAuthority;		
 				Resource resource = a.getResource();
-				return new AuthorityDTO(resource.getEndpoint(), resource.getMethod());
+				
+				String applicationName = UtilAuth.getApplicationName();
+				String servername = resource.getServer().getName();
+				
+				String prefix = applicationName.equals(servername) ? Strings.EMPTY : servername;
+				return new AuthorityDTO(prefix + "/" + resource.getPath(), resource.getMethod());
 			})
 			.collect(toList());
 	}
